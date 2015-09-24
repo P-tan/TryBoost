@@ -1,7 +1,12 @@
 #include "stdafx.h"
 #include <boost/units/systems/si.hpp>
+#include <boost/units/systems/si/prefixes.hpp>
 #include <boost/units/quantity.hpp>
 #include <boost/units/make_scaled_unit.hpp>
+#include <boost/units/io.hpp>
+#include <iostream>
+
+using namespace std;
 
 #define DEFINE_QUANTITY(unit, symbol) \
 	typedef boost::units::quantity<unit, int8_t> SI8_##symbol;\
@@ -21,7 +26,7 @@
 	DEFINE_QUANTITY(Unit_##symbol, symbol);
 
 #define DEFINE_SCALED_UNIT(unit, scale_num, symbol) \
-	typedef boost::units::make_scaled_unit<unit, boost::units::scale<10, boost::units::static_rational<scale_num> > > Unit_##symbol;\
+	typedef boost::units::make_scaled_unit<unit, boost::units::scale<10, boost::units::static_rational<scale_num> > >::type Unit_##symbol;\
 	BOOST_STATIC_CONSTANT(Unit_##symbol, unit_##symbol);\
 	DEFINE_QUANTITY(Unit_##symbol, symbol);
 
@@ -53,10 +58,17 @@ int main()
 {
 	DEFINE_SCALED_UNITS(boost::units::si::electric_potential, V);
 
+	using namespace boost::units;
+	using namespace boost::units::si;
 
-	SI8_V volt;
-	UI64_V volt2;
-	SI8_kV kv;
+	quantity<electric_potential> v = 1 * volt;
+	cout << v << endl;
+	SI8_V volt = (int8_t)1 * unit_V;
+	SI32_mV milliVOlt = 1 * unit_mV;
+	UI64_V volt2(1 * kilo * volt);
+	cout << volt2 << endl;
+	SI64_kV kv = 1 * unit_kV;
+	cout << kv << endl;
 	F64_kV kv2;
 	F32_nV nv;
     return 0;
